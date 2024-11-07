@@ -1,0 +1,10 @@
+data loading
+
+
+-- Load the cleaned dataset with 15 fields
+data = LOAD '/home/gg7hz/Downloads/Cleaned_data.tsv' 
+       USING PigStorage('\t') 
+       AS (marketplace:chararray, customer_id:chararray, review_id:chararray, product_id:chararray, 
+           product_parent:chararray, product_title:chararray, product_category:chararray, star_rating:int, 
+           helpful_votes:int, total_votes:int, vine:chararray, verified_purchase:chararray, 
+           review_headline:chararray, review_body:chararray, review_date:chararray);
