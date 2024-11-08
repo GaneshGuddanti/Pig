@@ -1,30 +1,27 @@
-data = LOAD '/home/apm8p/Downloads/ASHOKSWORK/amazon_reviews_us_Camera_v1_00.tsv' USING PigStorage('\t') 
-       AS (marketplace:chararray, customer_id:chararray, review_id:chararray, 
-           product_id:chararray, product_parent:chararray, product_title:chararray, 
-           product_category:chararray, star_rating:int, helpful_votes:int, 
-           total_votes:int, vine:chararray, verified_purchase:chararray, 
-           review_headline:chararray, review_body:chararray, review_date:chararray);
-data_no_header = FILTER data BY review_id != 'review_id'; 
-data_valid = FILTER data_no_header BY 
-              (marketplace IS NOT NULL AND customer_id IS NOT NULL AND review_id IS NOT NULL AND 
-               product_id IS NOT NULL AND product_title IS NOT NULL AND 
-               product_category IS NOT NULL AND star_rating > 0 AND 
-               helpful_votes >= 0 AND total_votes >= 0 AND 
-               vine IS NOT NULL AND verified_purchase IS NOT NULL AND 
-               review_headline IS NOT NULL AND review_body IS NOT NULL AND 
-               review_date IS NOT NULL AND
-               marketplace != '' AND 
-               customer_id != '' AND 
-               review_id != '' AND 
-               product_id != '' AND 
-               product_parent != '' AND 
-               product_title != '' AND 
-               product_category != '' AND 
-               vine != '' AND 
-               verified_purchase != '' AND 
-               review_headline != '' AND 
-               review_body != '' AND 
-               review_date != '');
+-- Load the input TSV file and define the schema
+review_data = LOAD '/home/gg7hz/Downloads/amazon_reviews_us_Camera_v1_00.tsv' USING PigStorage('\t') 
+             AS (marketplace: chararray, customer_id: chararray, review_id: chararray, 
+                 product_id: chararray, product_parent: chararray, product_title: chararray, 
+                 product_category: chararray, star_rating: int, helpful_votes: int, 
+                 total_votes: int, vine: chararray, verified_purchase: chararray, 
+                 review_headline: chararray, review_body: chararray, review_date: chararray);
 
+-- Filter out the header row (where review_id is 'review_id')
+filtered_no_header = FILTER review_data BY review_id != 'review_id';
 
-STORE data_valid INTO '/home/apm8p/Downloads/ASHOKSWORK/cleaned_amazon_reviews.tsv' USING PigStorage('\t');
+-- Filter out rows with missing or invalid values
+clean_data = FILTER filtered_no_header BY 
+             (marketplace IS NOT NULL AND customer_id IS NOT NULL AND review_id IS NOT NULL AND 
+              product_id IS NOT NULL AND product_title IS NOT NULL AND product_category IS NOT NULL AND 
+              star_rating > 0 AND helpful_votes >= 0 AND total_votes >= 0 AND 
+              vine IS NOT NULL AND verified_purchase IS NOT NULL AND 
+              review_headline IS NOT NULL AND review_body IS NOT NULL AND review_date IS NOT NULL AND
+              marketplace != '' AND 
+              customer_id != '' AND 
+              review_id != '' AND 
+              product_id != '' AND product_parent != '' AND product_title != '' AND 
+              product_category != '' AND vine != '' AND verified_purchase != '' AND 
+              review_headline != '' AND review_body != '' AND review_date != '');
+
+-- Store the cleaned data into a .tsv file
+STORE clean_data INTO 'Cleaned_data.tsv' USING PigStorage('\t');
