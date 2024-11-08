@@ -1,24 +1,3 @@
-data = LOAD '/home/gg7hz/Downloads/amazon_reviews_us_Camera_v1_00.tsv' USING PigStorage('\t') 
-       AS (marketplace: chararray, customer_id: chararray, review_id: chararray, 
-           product_id: chararray, product_parent: chararray, product_title: chararray, 
-           product_category: chararray, star_rating: int, helpful_votes: int, 
-           total_votes: int, vine: chararray, verified_purchase: chararray, 
-           review_headline: chararray, review_body: chararray, review_date: chararray);
-
-valid_data = FILTER data BY (customer_id IS NOT NULL) AND (review_id IS NOT NULL) 
-             AND (product_id IS NOT NULL) AND (star_rating IS NOT NULL) AND (marketplace IS NOT NULL) AND (product_parent IS NOT NULL) AND (product_title IS NOT NULL) AND (product_category IS NOT NULL) AND (helpful_votes IS NOT NULL) AND (total_votes IS NOT NULL) AND (vine IS NOT NULL) AND (verified_purchase IS NOT NULL) AND (review_headline IS NOT NULL) AND (review_body IS NOT NULL) AND (review_date IS NOT NULL);
-
-unique_data = DISTINCT valid_data;
-
-
-projected_data = FOREACH unique_data GENERATE marketplace, customer_id, review_id, 
-                 product_id, product_title, product_category, star_rating, 
-                 helpful_votes, total_votes, vine, verified_purchase, review_headline, review_date;
-
-
-STORE projected_data INTO 'Cleaned_data.tsv' USING PigStorage('\t');
-
-
 data = LOAD '/home/apm8p/Downloads/ASHOKSWORK/amazon_reviews_us_Camera_v1_00.tsv' USING PigStorage('\t') 
        AS (marketplace:chararray, customer_id:chararray, review_id:chararray, 
            product_id:chararray, product_parent:chararray, product_title:chararray, 
