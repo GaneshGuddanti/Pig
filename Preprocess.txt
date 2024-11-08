@@ -49,3 +49,37 @@ data_valid = FILTER data_no_header BY
 
 
 STORE data_valid INTO '/home/apm8p/Downloads/ASHOKSWORK/cleaned_amazon_reviews.tsv' USING PigStorage('\t');
+
+
+-- Load the data from the TSV file
+data = LOAD '/home/gg7hz/Downloads/amazon_reviews_us_Camera_v1_00.tsv' USING PigStorage('\t') 
+       AS (marketplace: chararray, customer_id: chararray, review_id: chararray, 
+           product_id: chararray, product_parent: chararray, product_title: chararray, 
+           product_category: chararray, star_rating: int, helpful_votes: int, 
+           total_votes: int, vine: chararray, verified_purchase: chararray, 
+           review_headline: chararray, review_body: chararray, review_date: chararray);
+
+-- Filter out rows with NULL values and enforce numeric fields
+valid_data = FILTER data BY (customer_id IS NOT NULL) AND (review_id IS NOT NULL) 
+             AND (product_id IS NOT NULL) AND (star_rating IS NOT NULL) AND (marketplace IS NOT NULL) 
+             AND (product_parent IS NOT NULL) AND (product_title IS NOT NULL) AND (product_category IS NOT NULL) 
+             AND (helpful_votes IS NOT NULL) AND (total_votes IS NOT NULL) AND (vine IS NOT NULL) 
+             AND (verified_purchase IS NOT NULL) AND (review_headline IS NOT NULL) AND (review_body IS NOT NULL) 
+             AND (review_date IS NOT NULL) 
+             AND (CONCAT('', (chararray) star_rating) matches '\\d+') 
+             AND (CONCAT('', (chararray) helpful_votes) matches '\\d+') 
+             AND (CONCAT('', (chararray) total_votes) matches '\\d+');
+
+-- Remove duplicates from the data
+unique_data = DISTINCT valid_data;
+
+-- Project the relevant columns
+projected_data = FOREACH unique_data GENERATE marketplace, customer_id, review_id, 
+                 product_id, product_title, product_category, star_rating, 
+                 helpful_votes, total_votes, vine, verified_purchase, review_headline, review_date;
+
+-- Order data by review_id to allow for single output file
+ordered_data = ORDER projected_data BY review_id;
+
+-- Store the processed data into a .tsv file
+STORE ordered_data INTO 'cleaned_data_single_file.tsv' USING PigStorage('\t');
