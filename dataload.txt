@@ -13,16 +13,16 @@ data = LOAD '/home/gg7hz/Cleaned_data.tsv'
 grouped_data = GROUP data BY (marketplace, product_category);
 
 -- Calculate the total number of review_id and average star_rating
-result_1 = FOREACH grouped_data GENERATE 
+result = FOREACH grouped_data GENERATE 
             FLATTEN(group) AS (marketplace, product_category),
             COUNT(data.review_id) AS total_reviews,
             AVG(data.star_rating) AS avg_star_rating;
 
 -- Dump the result for Task 1.1
-DUMP result_1;
+DUMP result;
 
 1.b. -- Filter out records where marketplace is 'US'
-filtered_result = FILTER result_1 BY marketplace != 'US';
+filtered_result = FILTER result BY marketplace != 'US';
 
 -- Dump the result for Task 1.2
 DUMP filtered_result;
