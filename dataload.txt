@@ -26,3 +26,36 @@ filtered_result = FILTER result_1 BY marketplace != 'US';
 
 -- Dump the result for Task 1.2
 DUMP filtered_result;
+
+2.a-- Group data by review_date
+grouped_data = GROUP data BY review_date;
+
+-- Calculate the total number of review_id
+result_1 = FOREACH grouped_data GENERATE 
+            FLATTEN(group) AS review_date,
+            COUNT(data.review_id) AS total_reviews;
+
+-- Dump the result
+DUMP result_1;
+
+2.
+b.-- Group data by product_id
+grouped_data = GROUP data BY product_id;
+
+-- Calculate the average helpful_votes and total_votes
+result_1 = FOREACH grouped_data GENERATE 
+            FLATTEN(group) AS product_id,
+            AVG(data.helpful_votes) AS avg_helpful_votes,
+            AVG(data.total_votes) AS avg_total_votes;
+
+-- Dump the result
+DUMP result_1;
+
+-- Order results by avg_total_votes in descending order
+ordered_result = ORDER result_1 BY avg_total_votes DESC;
+
+-- Limit to top 10 results
+top_10_result = LIMIT ordered_result 10;
+
+-- Dump the result
+DUMP top_10_result;
