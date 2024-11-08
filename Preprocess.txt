@@ -6,7 +6,7 @@ data = LOAD '/home/gg7hz/Downloads/amazon_reviews_us_Camera_v1_00.tsv' USING Pig
            review_headline: chararray, review_body: chararray, review_date: chararray);
 
 valid_data = FILTER data BY (customer_id IS NOT NULL) AND (review_id IS NOT NULL) 
-             AND (product_id IS NOT NULL) AND (star_rating IS NOT NULL);
+             AND (product_id IS NOT NULL) AND (star_rating IS NOT NULL) AND (marketplace IS NOT NULL) AND (product_parent IS NOT NULL) AND (product_title IS NOT NULL) AND (product_category IS NOT NULL) AND (helpful_votes IS NOT NULL) AND (total_votes IS NOT NULL) AND (vine IS NOT NULL) AND (verified_purchase IS NOT NULL) AND (review_headline IS NOT NULL) AND (review_body IS NOT NULL) AND (review_date IS NOT NULL);
 
 unique_data = DISTINCT valid_data;
 
